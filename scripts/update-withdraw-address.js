@@ -28,17 +28,11 @@ async function main() {
   const contractBalance = await getBalance(provider, buyMeACoffee.address);
   console.log("current balance of contract: ", await getBalance(provider, buyMeACoffee.address), "ETH");
 
-  // Withdraw funds if there are funds to withdraw.
-  if (contractBalance !== "0.0") {
-    console.log("withdrawing funds..")
-    const withdrawTxn = await buyMeACoffee.withdrawTips();
+  // update withdraw address
+    console.log("updating withdraw address ")
+    const withdrawTxn = await buyMeACoffee.updateWithdrawAddress('0xF81d98d27D54664A215235D600fDa37046eA9DAb');
     await withdrawTxn.wait();
-  } else {
-    console.log("no funds to withdraw!");
-  }
 
-  // Check ending balance.
-  console.log("current balance of contract: ", await getBalance(provider, buyMeACoffee.address), "ETH");
 }
 
 // We recommend this pattern to be able to use async/await everywhere

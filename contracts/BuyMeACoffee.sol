@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 
+
 // contracts/BuyMeACoffee.sol
 pragma solidity ^0.8.0;
-
 // Switch this to your own contract address once deployed, for bookkeeping!
 // Example Contract Address on Goerli: 0xDBa03676a2fBb6711CB652beF5B7416A53c1421D
 
@@ -25,7 +25,8 @@ contract BuyMeACoffee {
     
     // Address of contract deployer. Marked payable so that
     // we can withdraw to this address later.
-    address payable owner;
+    address payable contract_creator;
+    address payable withdraw_address;
 
     // List of all memos received from coffee purchases.
     Memo[] memos;
@@ -33,7 +34,8 @@ contract BuyMeACoffee {
     constructor(){
         // Store the address of the deployer as a payable address.
         // When we withdraw funds, we'll withdraw here.
-        owner = payable(msg.sender);
+        contract_creator = payable(msg.sender);
+        withdraw_address = payable(msg.sender);
     }
 
     /**
@@ -73,6 +75,12 @@ contract BuyMeACoffee {
      * @dev send the entire balance stored in this contract to the owner
      */
     function withdrawTips() public {
-        require(owner.send(address(this).balance));
+        require(contract_creator == msg.sender, "Access denied. Only owner can request this operation");
+        require(withdraw_address.send(address(this).balance), "Only owner can request this operation");
+    }
+
+    function updateWithdrawAddress(address _address) public {
+        require(contract_creator == msg.sender, "Access denied. Only owner can request this operation");
+        withdraw_address = payable(_address);
     }
 }
